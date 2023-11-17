@@ -9,9 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def check_authenticated():
-    if not st.session_state.get("logged_in"):
-        st.warning("Por favor, inicia sesión para acceder a esta página.")
-        st.stop()
+    #if not st.session_state.get("logged_in"):
+    #    st.warning("Por favor, inicia sesión para acceder a esta página.")
+    #    st.stop()
+    return True
+
 
 # Read the DATABASE_URI from the .env file
 db_uri = os.getenv("SQLALCHEMY_DATABASE_URI")
