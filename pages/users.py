@@ -66,6 +66,12 @@ def page_users():
 
     if st.button("Delete User"):
         with engine.connect() as connection:
+            query = text(f'SELECT * FROM "user" WHERE email = \'{del_user}\'')
+            result = connection.execute(query)
+            existing_user = result.fetchone()
+            user_id = existing_user[0]
+            delete_from_login_history=text(f'DELETE FROM "login_history" WHERE user_id = \'{str(user_id)}\'')
+            connection.execute(delete_from_login_history)
             # Delete the company from the table
             delete_user = text(f'DELETE FROM "user" WHERE email = \'{del_user}\'')
             connection.execute(delete_user)
@@ -93,9 +99,17 @@ def page_users():
             'first_name': first_name,
             'last_name': last_name,
             'user_metadata': {},
-            'empresa_id': int(empresa_id),
+            'empresa_id': empresa_id,
             'trial': trial,
         }
+        query_formation  = f"""INSERT INTO "user" (email, first_name, last_name,password, trial) VALUES ('{email}', '{first_name}', '{last_name}','{password}', '{trial}');"""
+        with engine.connect() as connection:       
+            insert_query = text(query_formation)
+            connection.execute(insert_query)
+            connection.commit()
+            st.success(f"User '{email}' Inserted successfully!")
+    else:
+        st.error("User does not exist!")
         print(data)
 
         json_data = json.dumps(data)
